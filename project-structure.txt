@@ -1,0 +1,39 @@
+.
+├── attached_assets
+│   ├── Pasted--Project-Prompt-AI-Powered-Interview-Preparation-SaaS-Application-using-React-Firebase-DeepSeek-1750790035143_1750790035144.txt
+│   ├── Pasted--Project-Prompt-AI-Powered-Interview-Preparation-SaaS-Application-using-React-Firebase-DeepSeek-1750872275947_1750872275948.txt
+│   ├── Pasted-export-interface-OpenRouterMessage-role-system-user-assistant-content-string--1750872112702_1750872112703.txt
+│   └── Pasted-Failed-to-load-resource-net-ERR-CERT-AUTHORITY-INVALIDUnderstand-this-error-stats-g-doubleclick-ne-1750873282873_1750873282874.txt
+├── client
+│   ├── index.html
+│   └── src
+│       ├── App.tsx
+│       ├── components
+│       ├── contexts
+│       ├── hooks
+│       ├── index.css
+│       ├── lib
+│       ├── main.tsx
+│       └── pages
+├── components.json
+├── drizzle.config.ts
+├── LOCAL_SETUP.md
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── project-structure.txt
+├── README.md
+├── replit.md
+├── server
+│   ├── download.ts
+│   ├── index.ts
+│   ├── routes.ts
+│   ├── storage.ts
+│   └── vite.ts
+├── shared
+│   └── schema.ts
+├── tailwind.config.ts
+├── tsconfig.json
+└── vite.config.ts
+
+11 directories, 26 files

@@ -1,0 +1,289 @@
+**Project Prompt: AI-Powered Interview Preparation SaaS Application using React, Firebase & DeepSeek on Replit**
+
+---
+
+### 📄 Project Title:
+
+**InterviewGenie - AI Interview Preparation Platform**
+
+---
+
+### 🔄 Overview:
+
+InterviewGenie transforms interview preparation by analyzing your resume and job description to generate personalized, real-world questions — all powered by AI. The platform simulates real interview conditions, evaluates responses, and helps users improve using structured feedback and guidance.
+
+---
+
+### ⚙️ Core Features (Detailed)
+
+#### 🏠 1. Landing Page
+
+* **Goal**: Introduce the app and funnel users to signup/login.
+* **Includes**:
+
+  * Clean headline & description (e.g., "Nail Your Dream Interview")
+  * Call to action buttons (Sign Up, Login)
+  * Royal white/black theme
+  * Fully responsive (TailwindCSS & ShadCN UI)
+
+---
+
+#### 🔐 2. Firebase Authentication
+
+* **Secure Login** with Firebase Email/Password and optional Google Auth
+* **Redirect to Dashboard** after login
+* **Auth State Management** via React Context or Zustand
+* **Logout** functionality available
+
+```js
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBIFamaMJOk4UjWBPTMVXM5sXKJRCF9wJs",
+  authDomain: "interview-preparation-ap-aa6d6.firebaseapp.com",
+  projectId: "interview-preparation-ap-aa6d6",
+  storageBucket: "interview-preparation-ap-aa6d6.appspot.com",
+  messagingSenderId: "630863414235",
+  appId: "1:630863414235:web:762536b6a1f99c6ba0ddfe"
+};
+
+const app = initializeApp(firebaseConfig);
+```
+
+---
+
+#### 🧾 3. Job & Resume Input Page
+
+* **Route**: `/upload`
+* **Fields**:
+
+  * Job Title (optional)
+  * Company Name (optional)
+  * Job Description (Required, min 50 chars)
+  * Resume Text (Required, min 100 chars)
+* **Functionality**:
+
+  * On submit: stores data under a unique `sessionId` in Firestore
+
+---
+
+#### 🤖 4. DeepSeek Question Generation (OpenRouter API)
+
+* **API Call**:
+
+```js
+fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer <OPENROUTER_API_KEY>",
+    "HTTP-Referer": "<YOUR_SITE_URL>",
+    "X-Title": "InterviewGenie",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    "model": "deepseek/deepseek-r1:free",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Generate 60+ technical questions: 20+ easy, 20+ intermediate, 20+ hard, and 25+ behavioral questions using this job description and resume."
+      }
+    ]
+  })
+});
+```
+
+* **Generated Question Types**:
+
+  * **Technical** (60+ Total):
+
+    * Easy: 20+
+    * Intermediate: 20+
+    * Hard: 20+
+  * **Behavioral**: 25+
+
+* **Prompt Strategy**:
+
+  * Role-based + Resume contextual
+  * Avoids duplicate questions
+  * Tailored for experience level, company type (product/service/startup)
+
+* **Storage**: Firestore (under session ID) with metadata (type, difficulty, flags)
+
+---
+
+#### 🧠 5. Questionary Tab (Sidebar Tab 1)
+
+* **Structure**:
+
+  * Split into two sections: **Technical** and **Behavioral**
+  * Each Technical section has:
+
+    * 20+ Easy
+    * 20+ Intermediate
+    * 20+ Hard
+  * Behavioral: 25+
+
+* **Functionality**:
+
+  * Show one question at a time
+  * Options:
+
+    * **Generate AI Answer**: Answer structured like real interview — with:
+
+      * Introduction
+      * Clear explanation of concept
+      * Definition
+      * Real-world examples
+      * Step-by-step reasoning
+      * Tips to impress interviewer
+    * **User Answer Box**: Manual input
+    * **Feedback Dialog**:
+
+      * ✅ Pros
+      * ❌ Cons
+      * 💡 Suggestions
+      * 📊 Score (optional)
+    * **Satisfaction Check**:
+
+      * “Are you satisfied with this answer?” → Yes/No → If No, offer **Regenerate**
+    * After user submits:
+
+      * **Compare with Ideal Answer** and show expected full answer
+
+* **Navigation**:
+
+  * **Next** and **Previous** buttons for all questions
+  * Session progress tracked & saved
+
+---
+
+#### 💻 6. Coding Tab (Sidebar Tab 2)
+
+* **Coding Practice Environment**:
+
+  * Questions focused on **problem-solving ability** (language agnostic)
+  * Easy (3), Intermediate (3), Hard (2)
+  * User can code in **any language**
+  * Advanced editor (Monaco or VS Code style):
+
+    * Proper spacing, indentation
+    * Syntax highlighting
+    * Auto-completion
+    * Dark theme support
+
+* **Features**:
+
+  * **Run Code** button → Compiles and shows output/errors
+  * **Generate Code with AI** → AI writes sample code in editor
+  * **Evaluation Feedback**:
+
+    * ✅ Correctness
+    * ⚙️ Optimization
+    * 🧪 Edge Case Handling
+
+* **Navigation**:
+
+  * Next / Previous buttons for each coding question
+
+---
+
+#### 📊 7. Session Management
+
+* Every input creates a unique **sessionId**
+* Stores:
+
+  * Questions (AI-generated)
+  * User responses
+  * AI answers
+  * Evaluations & scores
+  * Satisfaction flags
+* **Sessions are reload-persistent and resumable**
+
+---
+
+#### 📤 8. Export to PDF
+
+* After completing a session:
+
+  * Export full content as a professional PDF:
+
+    * Questions
+    * User answers
+    * AI answers
+    * Evaluations
+    * Final feedback & suggestions
+
+---
+
+#### 🔁 9. Final Summary Feedback
+
+* At session end, system generates:
+
+  * Section-wise performance (Technical, Behavioral, Coding)
+  * Suggestions on improvement areas
+  * Readiness rating
+
+---
+
+### 🧠 DeepSeek Prompting Details
+
+**System Prompt**:
+
+```txt
+You are a professional interviewer. Based on the job description and resume, generate:
+- 20+ Easy technical
+- 20+ Intermediate technical
+- 20+ Hard technical
+- 25+ Behavioral
+Make questions unique, relevant, and realistic. Tailor to role, company, and resume details.
+```
+
+**User Prompt (Example)**:
+
+```txt
+Job: Frontend Engineer at Google
+Resume: B.Tech in CS, 3 years React, built multiple large-scale UI projects, familiar with Firebase, Tailwind, system design...
+```
+
+---
+
+### 🎨 UI Guidelines
+
+* **Theme**: Royal White + Royal Black
+* **Framework**: TailwindCSS + ShadCN UI
+* **Component Use**:
+
+  * Tabs → Questionary, Coding
+  * Dialogs → AI Feedback, Submission Confirmation
+  * Editor → Monaco-based with full features
+  * Buttons → Regenerate, Submit, Next, Previous
+
+---
+
+### 🛠 Technical Stack
+
+* **Frontend**: React.js
+* **UI**: TailwindCSS + ShadCN
+* **Auth**: Firebase
+* **Data**: Firestore
+* **AI**: DeepSeek R1 (OpenRouter API)
+* **Hosting**: Replaced Replit (Use custom deployment)
+
+---
+
+### ✅ Summary Flow:
+
+1. User logs in/signup
+2. Uploads job description + resume
+3. AI generates 60+ technical + 25+ behavioral questions
+4. User answers questions with manual/AI help
+5. AI gives feedback → user confirms or regenerates
+6. Answers stored and compared with ideal solutions
+7. Coding tab allows multi-language problem-solving with AI code suggestions
+8. All responses saved under sessionId
+9. Session report exported to PDF
+10. Summary feedback given at end
+
+---
+
+Let me know if you want the full React code scaffold, or help deploying with advanced AI features and error-free API calls.

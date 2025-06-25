@@ -1,0 +1,282 @@
+**Project Prompt: AI-Powered Interview Preparation SaaS Application using React, Firebase & DeepSeek via OpenRouter**
+
+---
+
+### 📄 Project Title:
+
+**InterviewGenie - AI Interview Preparation Platform**
+
+---
+
+### 🔄 Overview:
+
+Build a **SaaS-style AI Interview Preparation Platform** using **React**, **Firebase**, **ShadCN UI**, and **DeepSeek R1 via OpenRouter API**. This app guides users through real-world interview preparation by analyzing their resume and job descriptions, generating customized questions, and helping them craft or evaluate their answers using AI.
+
+---
+
+### ⚙️ Core Features (Detailed)
+
+#### 🏠 1. Landing Page
+
+* **Goal**: Introduce the app and funnel users to signup/login.
+* **Includes**:
+
+  * Clean headline & description (e.g., "Nail Your Dream Interview")
+  * Call to action buttons (Sign Up, Login)
+  * Royal white/black theme
+  * Responsive with TailwindCSS & ShadCN components
+
+---
+
+#### 🔐 2. Firebase Authentication
+
+* **Function**: Authenticate users securely using Firebase (email/password and optional Google auth)
+* **Details**:
+
+  * Auth state management in React (Context or Zustand)
+  * Redirect to Dashboard after login
+  * Logout functionality
+
+```js
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBIFamaMJOk4UjWBPTMVXM5sXKJRCF9wJs",
+  authDomain: "interview-preparation-ap-aa6d6.firebaseapp.com",
+  projectId: "interview-preparation-ap-aa6d6",
+  storageBucket: "interview-preparation-ap-aa6d6.appspot.com",
+  messagingSenderId: "630863414235",
+  appId: "1:630863414235:web:762536b6a1f99c6ba0ddfe"
+};
+
+const app = initializeApp(firebaseConfig);
+```
+
+---
+
+#### 🧾 3. Job & Resume Input Page
+
+* **Route**: `/upload`
+* **Purpose**: Gather necessary input to generate questions
+* **Fields**:
+
+  * Job Title (Optional)
+  * Company Name (Optional)
+  * Job Description (Required, min 50 characters)
+  * Resume (Required, min 100 characters)
+* **Functionality**:
+
+  * On submit, stores data in Firebase Firestore under a unique session
+  * Creates a unique `sessionId` for tracking
+
+---
+
+#### 🤖 4. Question Generation with DeepSeek (OpenRouter API)
+
+* **Triggered When**:
+
+  * User submits job description + resume
+* **API Endpoint**: `https://openrouter.ai/api/v1/chat/completions`
+* **API Method**: `fetch`
+* **Prompting Strategy**:
+
+  * Use prompt engineering to ensure:
+
+    * No duplicate questions
+    * Variety based on job, company, resume, seniority, industry
+
+```js
+fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer <OPENROUTER_API_KEY>",
+    "HTTP-Referer": "<YOUR_SITE_URL>", // Optional
+    "X-Title": "<YOUR_SITE_NAME>",     // Optional
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: "deepseek/deepseek-r1:free",
+    messages: [
+      {
+        role: "user",
+        content: "What is the meaning of life?"
+      }
+    ]
+  })
+});
+```
+
+* **Question Distribution**:
+
+  * Technical:
+
+    * Easy: 20+
+    * Intermediate: 20+
+    * Hard: 20+
+  * Behavioral: 25+
+* **Storage**: All questions (with unique ID, type, difficulty, and generated flag) saved in Firestore under the sessionId
+
+---
+
+#### 🧠 5. Questionary Tab (Sidebar Navigation)
+
+* **Function**: Walk user through one question per screen
+* **UI Features**:
+
+  * Question displayed clearly
+  * Input box for writing answer
+  * Buttons:
+
+    * **Generate Answer with AI** → generates high-quality answer using DeepSeek
+    * **Submit Answer** → stores user's response
+  * After submit:
+
+    * AI evaluates answer and gives:
+
+      * Pros ✅
+      * Cons ❌
+      * Suggestions 💡
+      * Score/Grade (optional)
+    * Asks: “Are you satisfied with this answer?” \[Yes/No]
+
+      * If No → allows re-answering or regeneration
+  * Progress tracking stored under session
+
+---
+
+#### 💻 6. Coding Tab
+
+* **Purpose**: Real-world coding simulation
+* **Questions**:
+
+  * Easy (3)
+  * Intermediate (3)
+  * Hard (2)
+* **Features**:
+
+  * Monaco-based code editor
+  * Submit button triggers AI-based feedback
+
+    * Correctness ✅
+    * Optimization 📈
+    * Edge Case Handling 🧪
+  * Syntax highlighting & auto-save
+
+---
+
+#### 📊 7. Session Management
+
+* **Session ID**: Unique per upload event
+* **Data Stored**:
+
+  * All generated questions
+  * User inputs
+  * AI answers
+  * Evaluations
+  * Satisfaction flags
+* **Benefits**:
+
+  * If user reloads or returns → questions stay the same
+  * Avoids generating different questions every time
+  * Allows resuming incomplete sessions
+
+---
+
+#### 📤 8. Export to PDF
+
+* **After session completed**:
+
+  * User can export:
+
+    * All questions
+    * Answers (AI + User)
+    * Feedback/evaluations
+    * Overall Summary
+* **Design**:
+
+  * Clean formatting (Header + Sectioned)
+  * Clearly shows which answers were AI-generated or user-submitted
+
+---
+
+#### 🔁 9. Overall Feedback
+
+* Once session is done:
+
+  * Generate summary feedback:
+
+    * How well candidate did in each section
+    * Behavioral score
+    * Technical depth & accuracy
+    * Coding strength
+  * Include guidance:
+
+    * Which areas to revise/improve
+    * Useful tips for next interviews
+
+---
+
+### 🧠 DeepSeek Prompting Details
+
+**System Prompt**:
+
+```txt
+You are a professional technical interviewer. Generate interview questions based on the provided job description and resume. Avoid duplicates. Generate:
+- 20+ easy
+- 20+ medium
+- 20+ hard technical questions
+- 25+ behavioral questions
+Customize based on role, company type (product/service/startup), and resume details.
+```
+
+**User Prompt (Sample)**:
+
+```txt
+Job: Frontend Engineer at Google
+Resume: B.Tech in CS, 3 years React, built multiple large-scale UI projects, familiar with Firebase, Tailwind, and system design...
+```
+
+---
+
+### 🎨 UI Guidelines
+
+* **Theme**: Royal White + Royal Black
+* **Framework**: TailwindCSS + ShadCN
+* **Components Used**:
+
+  * Tabs for `Questionary`, `Coding`
+  * Dialogs for feedback/evaluation
+  * Cards for each question display
+  * Inputs for answers
+  * Buttons for generate/submit actions
+
+---
+
+### 🛠 Technical Stack
+
+* **Frontend**: React.js
+* **UI**: TailwindCSS + ShadCN
+* **Auth**: Firebase Auth
+* **Data Store**: Firebase Firestore
+* **AI Engine**: DeepSeek R1 via OpenRouter
+* **Hosting**: Firebase Hosting (Replit removed)
+
+---
+
+### ✅ Summary Flow:
+
+1. User logs in / signs up (Firebase)
+2. Uploads job description and resume
+3. DeepSeek generates questions → stored in Firestore under a session
+4. User answers each question manually or with AI help
+5. Answers are evaluated with pros/cons/suggestions
+6. At the end:
+
+   * Coding section completed
+   * All data can be exported as PDF
+   * Feedback generated
+7. All sessions are trackable, recoverable, and stored
+
+---
+
+Let me know if you’d like a complete **React code scaffold** with all routes and components, or a step-by-step guide for each module.

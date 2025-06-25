@@ -1,0 +1,109 @@
+Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1494060472&gjid=1832431086&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=2024249760:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1475282711&gjid=845382614&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=2109335594:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1849048330&gjid=1237912191&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1871310502:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=84494312&gjid=1514394544&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1104449937:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=688140662&gjid=2041403529&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=626056042:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1360465359&gjid=650718376&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1382955816:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1420080103&gjid=840371668&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=30073101:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1518434506&gjid=2142723098&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1811655101:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=194104284&gjid=1771876021&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1626159409:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=303593022&gjid=1157453670&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1877832932:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+2 Video element not found for attaching listeners.
+(anonymous) @ chrome-extension://p…faa/content.js:1457Understand this warning
+InterDisplay-Regular.ttf:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Understand this error
+ Video element not found for attaching listeners.
+(anonymous) @ chrome-extension://p…faa/content.js:1457Understand this warning
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=818812248&gjid=804120238&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1699216974:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=960484759&gjid=1627027879&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=1512331541:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+148interview:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+chrome-extension://p…faa/content.js:2805 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+501interview:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+chrome-extension://p…faa/content.js:1457 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+122interview:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+3chrome-extension://p…alfaa/content.js:51 Uncaught Error: Extension context invalidated.
+    at chrome-extension://phbhomcaiapjeoghkpegkkccfidalfaa/content.js:51:1692684
+    at HTMLDocument.b (chrome-extension://phbhomcaiapjeoghkpegkkccfidalfaa/content.js:51:1692900)Understand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1399973607&gjid=1158381885&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=401366639:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1955653645.1742210138&jid=1499446528&gjid=1755577442&_gid=680009751.1750789889&_u=SCCAgEAjQAAAAGgCIAD~&z=108663651:1 
+            
+            
+           Failed to load resource: net::ERR_CERT_AUTHORITY_INVALIDUnderstand this error
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 AI response parsing failed, trying fallback generation: SyntaxError: Unterminated string in JSON at position 12543 (line 424 column 14)
+    at JSON.parse (<anonymous>)
+    at handleSubmit (UploadForm.tsx:200:38)
+Mt.forEach.n.<computed> @ Console.js:61
+handleSubmit @ UploadForm.tsx:210Understand this warning
+Console.js:61 Fallback AI response: [
+  {
+    "id": "1",
+    "type": "technical",
+    "difficulty": "easy",
+    "question": "Explain the CAP theorem and its implications for distributed systems."
+  },
+  {
+    "id": "2",
+    "type": "tec...
+Console.js:61 Fallback AI generation also failed, using static questions: SyntaxError: Expected ',' or ']' after array element in JSON at position 12142 (line 457 column 4)
+    at JSON.parse (<anonymous>)
+    at handleSubmit (UploadForm.tsx:260:37)
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+[Violation] Forced reflow while executing JavaScript took 31ms
