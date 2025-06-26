@@ -1,5 +1,5 @@
 export interface OpenRouterMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -14,9 +14,13 @@ export interface OpenRouterResponse {
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-export async function callDeepSeek(messages: OpenRouterMessage[]): Promise<string> {
+export async function callDeepSeek(
+  messages: OpenRouterMessage[]
+): Promise<string> {
   if (!OPENROUTER_API_KEY) {
-    throw new Error("OpenRouter API key not configured. Please check your VITE_OPENROUTER_API_KEY environment variable.");
+    throw new Error(
+      "OpenRouter API key not configured. Please check your VITE_OPENROUTER_API_KEY environment variable."
+    );
   }
 
   try {
@@ -26,10 +30,10 @@ export async function callDeepSeek(messages: OpenRouterMessage[]): Promise<strin
     const response = await fetch(OPENROUTER_BASE_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
         "HTTP-Referer": window.location.origin,
         "X-Title": "InterviewGenie",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "deepseek/deepseek-r1:free",
@@ -37,9 +41,9 @@ export async function callDeepSeek(messages: OpenRouterMessage[]): Promise<strin
         max_tokens: 8000,
         temperature: 0.3,
         top_p: 0.9,
-        stream: false
+        stream: false,
       }),
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
@@ -47,35 +51,46 @@ export async function callDeepSeek(messages: OpenRouterMessage[]): Promise<strin
     if (!response.ok) {
       const errorText = await response.text();
       console.error("OpenRouter API error details:", errorText);
-      
+
       if (response.status === 401) {
-        throw new Error("OpenRouter API authentication failed. Please verify your API key.");
+        throw new Error(
+          "OpenRouter API authentication failed. Please verify your API key."
+        );
       }
       if (response.status === 429) {
-        throw new Error("Rate limit exceeded. Please try again in a few minutes.");
+        throw new Error(
+          "Rate limit exceeded. Please try again in a few minutes."
+        );
       }
-      
-      throw new Error(`OpenRouter API error: ${response.status} ${response.statusText} - ${errorText}`);
+
+      throw new Error(
+        `OpenRouter API error: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
 
     const data: OpenRouterResponse = await response.json();
     const content = data.choices[0]?.message?.content;
-    
+
     if (!content) {
       throw new Error("No response content received from AI");
     }
-    
+
     return content;
   } catch (error: any) {
-    if (error.name === 'AbortError') {
-      throw new Error('AI request timeout - please try again');
+    if (error.name === "AbortError") {
+      throw new Error("AI request timeout - please try again");
     }
     console.error("Error calling DeepSeek API:", error);
     throw error;
   }
 }
 
-export function createQuestionGenerationPrompt(jobDescription: string, resume: string, jobTitle?: string, companyName?: string): OpenRouterMessage[] {
+export function createQuestionGenerationPrompt(
+  jobDescription: string,
+  resume: string,
+  jobTitle?: string,
+  companyName?: string
+): OpenRouterMessage[] {
   const systemPrompt = `You are a senior technical interviewer creating comprehensive interview questions. Generate exactly 85 interview questions based on the job description and resume.
 
 CRITICAL: Return ONLY a valid JSON array with no markdown, explanations, or extra text. Structure:
@@ -114,8 +129,8 @@ JSON FORMAT:
 
 Tailor questions to company type and job requirements. Use specific technologies mentioned in job description.`;
 
-  const userPrompt = `Position: ${jobTitle || 'Software Developer'}
-Company: ${companyName || 'Technology Company'}
+  const userPrompt = `Position: ${jobTitle || "Software Developer"}
+Company: ${companyName || "Technology Company"}
 Job Requirements: ${jobDescription.substring(0, 1000)}
 Candidate Background: ${resume.substring(0, 800)}
 
@@ -135,16 +150,20 @@ Generate 100 comprehensive interview questions as a pure JSON array with exact d
 Tailor ALL questions to the specific company standards and job requirements.`;
 
   return [
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: userPrompt }
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
   ];
 }
 
-export function createAnswerGenerationPrompt(question: string, questionType: string, context?: string): OpenRouterMessage[] {
-  if (questionType === 'technical') {
+export function createAnswerGenerationPrompt(
+  question: string,
+  questionType: string,
+  context?: string
+): OpenRouterMessage[] {
+  if (questionType === "technical") {
     return [
       {
-        role: 'system',
+        role: "system",
         content: `You are a senior software engineer providing a technical interview answer. Create a response that demonstrates deep expertise and impresses interviewers.
 
 STRUCTURE YOUR ANSWER AS:
@@ -154,19 +173,21 @@ STRUCTURE YOUR ANSWER AS:
 4. Best Practices: Industry standards and recommendations
 5. Advanced Insight: Something that shows senior-level thinking
 
-FORMAT: Use natural conversation flow with clear sections. NO asterisks or markdown symbols. Use bullet points and numbered lists for clarity. Write in a conversational tone as if speaking to an interviewer.`
+FORMAT: Use natural conversation flow with clear sections. NO asterisks or markdown symbols. Use bullet points and numbered lists for clarity. Write in a conversational tone as if speaking to an interviewer.`,
       },
       {
-        role: 'user',
-        content: `Technical Question: ${question}${context ? `\nContext: ${context}` : ''}
+        role: "user",
+        content: `Technical Question: ${question}${
+          context ? `\nContext: ${context}` : ""
+        }
 
-Provide a comprehensive technical answer that showcases expertise and impresses interviewers.`
-      }
+Provide a comprehensive technical answer that showcases expertise and impresses interviewers.`,
+      },
     ];
-  } else if (questionType === 'behavioral') {
+  } else if (questionType === "behavioral") {
     return [
       {
-        role: 'system', 
+        role: "system",
         content: `You are an executive coach helping prepare impressive behavioral interview answers. Create responses using the STAR method that demonstrate leadership and impact.
 
 STRUCTURE YOUR ANSWER AS:
@@ -176,30 +197,37 @@ STRUCTURE YOUR ANSWER AS:
 4. Result: Quantify the positive outcome and impact
 5. Learning: What insights you gained for future situations
 
-FORMAT: Tell a compelling story that highlights leadership, problem-solving, and results. NO asterisks or markdown symbols. Use natural storytelling flow that sounds authentic and engaging.`
+FORMAT: Tell a compelling story that highlights leadership, problem-solving, and results. NO asterisks or markdown symbols. Use natural storytelling flow that sounds authentic and engaging.`,
       },
       {
-        role: 'user',
+        role: "user",
         content: `Behavioral Question: ${question}
 
-Provide a compelling STAR-method answer that demonstrates leadership and results.`
-      }
+Provide a compelling STAR-method answer that demonstrates leadership and results.`,
+      },
     ];
   } else {
     return [
       {
-        role: 'system',
-        content: 'You are a coding interview expert. Provide a well-structured solution with clear explanation, optimization notes, and best practices. Format code properly with comments.'
+        role: "system",
+        content:
+          "You are a coding interview expert. Provide a well-structured solution with clear explanation, optimization notes, and best practices. Format code properly with comments.",
       },
       {
-        role: 'user',
-        content: `Coding Question: ${question}${context ? `\nContext: ${context}` : ''}\n\nProvide a complete solution with explanation.`
-      }
+        role: "user",
+        content: `Coding Question: ${question}${
+          context ? `\nContext: ${context}` : ""
+        }\n\nProvide a complete solution with explanation.`,
+      },
     ];
   }
 }
 
-export function createEvaluationPrompt(question: string, answer: string, questionType: string): OpenRouterMessage[] {
+export function createEvaluationPrompt(
+  question: string,
+  answer: string,
+  questionType: string
+): OpenRouterMessage[] {
   const systemPrompt = `You are an expert interviewer evaluating candidate responses. Provide detailed feedback in the following JSON format:
 {
   "score": 8.5,
@@ -214,7 +242,10 @@ export function createEvaluationPrompt(question: string, answer: string, questio
 Score should be between 0-10. Be constructive but honest in your evaluation.`;
 
   return [
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: `Question Type: ${questionType}\nQuestion: ${question}\nCandidate Answer: ${answer}` }
+    { role: "system", content: systemPrompt },
+    {
+      role: "user",
+      content: `Question Type: ${questionType}\nQuestion: ${question}\nCandidate Answer: ${answer}`,
+    },
   ];
 }

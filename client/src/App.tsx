@@ -23,6 +23,7 @@ function AppContent() {
 
   const { user, loading: authLoading } = useAuth();
   const { currentSession } = useSession();
+  console.log("🔐 LOCAL API KEY:", import.meta.env.VITE_OPENROUTER_API_KEY);
 
   // Handle authentication state changes
   useEffect(() => {
