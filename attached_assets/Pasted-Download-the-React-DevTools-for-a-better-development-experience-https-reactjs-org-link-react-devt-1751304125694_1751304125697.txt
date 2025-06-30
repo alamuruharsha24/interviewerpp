@@ -1,0 +1,33 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+4App.tsx:26 🔐 LOCAL API KEY: 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
+openrouter.ai/api/v1/chat/completions:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()Understand this error
+openrouter.ts:53 OpenRouter API error details: {"error":{"message":"No auth credentials found","code":401}}
+callDeepSeek @ openrouter.ts:53Understand this error
+openrouter.ts:83 Error calling DeepSeek API: Error: OpenRouter API authentication failed. Please verify your API key.
+    at callDeepSeek (openrouter.ts:56:15)
+    at async handleSubmit (UploadForm.tsx:72:22)
+callDeepSeek @ openrouter.ts:83Understand this error
+UploadForm.tsx:74 OpenRouter API failed, using fallback questions: OpenRouter API authentication failed. Please verify your API key.
+handleSubmit @ UploadForm.tsx:74Understand this warning
+openrouter.ai/api/v1/chat/completions:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()Understand this error
+openrouter.ts:53 OpenRouter API error details: {"error":{"message":"No auth credentials found","code":401}}
+callDeepSeek @ openrouter.ts:53Understand this error
+openrouter.ts:83 Error calling DeepSeek API: Error: OpenRouter API authentication failed. Please verify your API key.
+    at callDeepSeek (openrouter.ts:56:15)
+    at async handleSubmit (UploadForm.tsx:104:30)
+callDeepSeek @ openrouter.ts:83Understand this error
+UploadForm.tsx:142 Fallback AI generation failed: Error: OpenRouter API authentication failed. Please verify your API key.
+    at callDeepSeek (openrouter.ts:56:15)
+    at async handleSubmit (UploadForm.tsx:104:30)
+handleSubmit @ UploadForm.tsx:142Understand this warning
+2App.tsx:26 🔐 LOCAL API KEY: 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
+/api/dsa/generate:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
