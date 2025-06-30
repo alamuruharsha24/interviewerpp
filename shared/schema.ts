@@ -53,6 +53,19 @@ export interface Question {
   examples?: { input: string; output: string; explanation?: string }[];
 }
 
+export interface DSAQuestion {
+  id: string;
+  title: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  topic: string;
+  description: string;
+  leetcodeUrl?: string;
+  gfgUrl?: string;
+  tags: string[];
+  timeComplexity?: string;
+  spaceComplexity?: string;
+}
+
 export interface SessionProgress {
   currentQuestionIndex: number;
   completedQuestions: string[];

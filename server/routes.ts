@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertSessionSchema, insertAnswerSchema } from "@shared/schema";
 import { nanoid } from "nanoid";
+import { generateDSAQuestions } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
@@ -126,6 +127,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(answer);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // DSA Questions route
+  app.post("/api/dsa/generate", async (req, res) => {
+    try {
+      const questions = await generateDSAQuestions();
+      res.json({ questions });
+    } catch (error: any) {
+      console.error("Error generating DSA questions:", error);
+      res.status(500).json({ message: "Failed to generate DSA questions. Please check your API key." });
     }
   });
 
