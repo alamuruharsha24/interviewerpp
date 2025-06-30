@@ -112,6 +112,10 @@ Changelog:
 - June 24, 2025. Successfully migrated from Replit Agent to Replit environment with proper server binding and coding question display fixes
 - June 25, 2025. Configured for local development with separate frontend/backend servers and improved AI question generation
 - June 25, 2025. Added project download functionality and pushed complete codebase to Git repository
+- June 30, 2025. Completed migration to Replit environment with enhanced DSA functionality
+- June 30, 2025. Added DSA section with 32+ curated coding questions covering arrays, strings, trees, graphs, dynamic programming, and more
+- June 30, 2025. Implemented fallback question system ensuring DSA questions work even without OpenAI API key
+- June 30, 2025. Added redirect functionality to LeetCode and GeeksforGeeks for practice execution
 
 ## User Preferences
 
