@@ -130,14 +130,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // DSA Questions route
+  // DSA Questions route - Company-specific generation
   app.post("/api/dsa/generate", async (req, res) => {
     try {
-      const questions = await generateDSAQuestions();
-      res.json({ questions });
+      const { companyName } = req.body;
+      
+      if (!companyName || typeof companyName !== 'string') {
+        return res.status(400).json({ error: "Company name is required" });
+      }
+
+      // Import the DSA generator
+      const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
+      
+      console.log(`Generating DSA questions for company: ${companyName}`);
+      const result = await generateCompanySpecificDSAQuestions(companyName);
+      
+      if (!result.success) {
+        console.warn(`DSA generation had issues: ${result.error}`);
+      }
+      
+      res.json({ 
+        questions: result.questions,
+        success: result.success,
+        company: companyName 
+      });
     } catch (error: any) {
-      console.error("Error generating DSA questions:", error);
-      res.status(500).json({ message: "Failed to generate DSA questions. Please check your API key." });
+      console.error("DSA generation error:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 

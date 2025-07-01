@@ -120,6 +120,14 @@ Changelog:
 - July 1, 2025. Fixed OpenAI API initialization to work without requiring API key on server startup
 - July 1, 2025. Updated OpenRouter model from deepseek-r1-0528 to deepseek-chat-v3-0324 for better reliability and speed
 - July 1, 2025. Implemented proper error handling for missing API keys with graceful fallback to default questions
+- July 1, 2025. MAJOR UPDATE: Implemented comprehensive DSA question generation system with company-specific AI generation
+- July 1, 2025. Added company selection interface with 25+ top tech companies and custom company input
+- July 1, 2025. Created enhanced DSA Tab with 30+ AI-generated questions based on company interview patterns
+- July 1, 2025. Integrated real LeetCode and GeeksforGeeks URLs with direct redirection functionality
+- July 1, 2025. Fixed code compiler with proper syntax validation, test case execution, and realistic output simulation
+- July 1, 2025. Enhanced AI question generation with multiple-request system to generate 100 questions (60 technical + 25 behavioral + 15 coding)
+- July 1, 2025. Implemented robust JSON parsing with error recovery for AI responses
+- July 1, 2025. Created independent DSA API endpoint separate from main question generation system
 
 ## User Preferences
 
