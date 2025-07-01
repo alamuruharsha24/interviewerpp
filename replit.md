@@ -116,6 +116,10 @@ Changelog:
 - June 30, 2025. Added DSA section with 32+ curated coding questions covering arrays, strings, trees, graphs, dynamic programming, and more
 - June 30, 2025. Implemented fallback question system ensuring DSA questions work even without OpenAI API key
 - June 30, 2025. Added redirect functionality to LeetCode and GeeksforGeeks for practice execution
+- July 1, 2025. Successfully migrated project from Replit Agent to Replit environment
+- July 1, 2025. Fixed OpenAI API initialization to work without requiring API key on server startup
+- July 1, 2025. Updated OpenRouter model from deepseek-r1-0528 to deepseek-chat-v3-0324 for better reliability and speed
+- July 1, 2025. Implemented proper error handling for missing API keys with graceful fallback to default questions
 
 ## User Preferences
 

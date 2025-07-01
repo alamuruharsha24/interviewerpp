@@ -36,9 +36,9 @@ export async function callDeepSeek(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "deepseek/deepseek-r1-0528:free",
+        model: "deepseek/deepseek-chat-v3-0324:free",
         messages,
-        max_tokens: 8000,
+        max_tokens: 4000,
         temperature: 0.3,
         top_p: 0.9,
         stream: false,
