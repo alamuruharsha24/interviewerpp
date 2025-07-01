@@ -1,0 +1,60 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+4App.tsx:26 🔐 LOCAL API KEY: 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
+ Raw AI response: Here is the JSON array with 100 tailored interview questions for the Front-End Engineer position at Amazon:
+
+```json
+[
+  {
+    "id": "tech_easy_1",
+    "type": "technical",
+    "difficulty": "easy",
+    "question": "What are the key differences between ReactJS and React Native?"
+  },
+  {
+    "id": "...
+ Cleaned response: [
+  {
+    "id": "tech_easy_1",
+    "type": "technical",
+    "difficulty": "easy",
+    "question": "What are the key differences between ReactJS and React Native?"
+  },
+  {
+    "id": "tech_easy_2",
+    "type": "technical",
+    "difficulty": "easy",
+    "question": "Explain the concept of Virtual DOM in React."
+  },
+  {
+    "id": "tech_easy_3",
+    "type": "technical",
+    "difficulty": "easy",
+    "question": "What are the benefits of using client-side rendering (CSR) over server-side rendering (...
+ JSON parsing failed: SyntaxError: Expected ',' or ']' after array element in JSON at position 14338 (line 481 column 4)
+    at JSON.parse (<anonymous>)
+    at handleSubmit (/src/components/UploadForm.tsx:186:33)
+handleSubmit @ /src/components/UploadForm.tsx:218Understand this warning
+ AI response parsing failed, trying fallback generation: SyntaxError: Expected ',' or ']' after array element in JSON at position 14338 (line 481 column 4)
+    at JSON.parse (<anonymous>)
+    at handleSubmit (/src/components/UploadForm.tsx:186:33)
+handleSubmit @ /src/components/UploadForm.tsx:222Understand this warning
+ Fallback AI response: ```json
+[
+  {
+    "id": "1",
+    "type": "technical",
+    "difficulty": "easy",
+    "question": "What is ReactJS and why is it used in front-end development?"
+  },
+  {
+    "id": "2",
+    "type": "tech...
+ Cleaned fallback JSON: [  {    "id": "1",    "type": "technical",    "difficulty": "easy",    "question": "What is ReactJS and why is it used in front-end development?"
+  },  {    "id": "2",    "type": "technical",    "difficulty": "easy",    "question": "Explain the difference between state and props in React."
+  },  {    "id": "3",    "type": "technical",    "difficulty": "easy",    "question": "What are React hooks? Name a few commonly used hooks."
+  },  {    "id": "4",    "type": "technical",    "difficulty": "eas...
+ Fallback AI generation also failed, using static questions: SyntaxError: Expected ',' or '}' after property value in JSON at position 13813 (line 87 column 13)
+    at JSON.parse (<anonymous>)
+    at handleSubmit (/src/components/UploadForm.tsx:266:37)
+handleSubmit @ /src/components/UploadForm.tsx:285Understand this warning
+2App.tsx:26 🔐 LOCAL API KEY: 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

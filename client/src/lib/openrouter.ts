@@ -93,7 +93,15 @@ export function createQuestionGenerationPrompt(
 ): OpenRouterMessage[] {
   const systemPrompt = `You are a senior technical interviewer creating comprehensive interview questions. Generate exactly 85 interview questions based on the job description and resume.
 
-CRITICAL: Return ONLY a valid JSON array with no markdown, explanations, or extra text. Structure:
+CRITICAL FORMATTING RULES:
+- Return ONLY valid JSON array format
+- No markdown blocks or code fences
+- No explanations or extra text  
+- No trailing commas
+- All strings must be properly quoted
+- Ensure proper JSON syntax
+
+Structure:
 [
   {
     "id": "tech_easy_1",

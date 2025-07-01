@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSession } from "@/contexts/SessionContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { callDeepSeek, createQuestionGenerationPrompt } from "@/lib/openrouter";
+import { callDeepSeek, createQuestionGenerationPrompt, OpenRouterMessage } from "@/lib/openrouter";
 import { Question } from "@shared/schema";
 import { Sparkles, Loader2 } from "lucide-react";
 
@@ -78,9 +78,9 @@ export default function UploadForm({ onSessionCreated }: UploadFormProps) {
 
         // Try AI generation as fallback
         try {
-          const fallbackMessages = [
+          const fallbackMessages: OpenRouterMessage[] = [
             { 
-              role: 'system', 
+              role: 'system' as const, 
               content: `Generate exactly 100 interview questions as a JSON array. No markdown, no explanations.
 
 STRUCTURE: 60 technical (20 easy, 20 medium, 20 hard) + 25 behavioral + 15 coding (5 easy, 5 medium, 5 hard)
@@ -92,7 +92,7 @@ For coding add: "context", "constraints":[], "examples":[]
 Return ONLY the JSON array.` 
             },
             { 
-              role: 'user', 
+              role: 'user' as const, 
               content: `Company: ${formData.companyName || 'Technology Company'}
 Position: ${formData.jobTitle || 'Software Engineer'}
 Requirements: ${formData.jobDescription.substring(0, 500)}
@@ -207,8 +207,12 @@ Create company-specific and role-specific questions.`
         }
         
         // Fix common JSON issues
-        cleanResponse = cleanResponse.replace(/,\s*]/g, ']'); // Remove trailing commas
-        cleanResponse = cleanResponse.replace(/,\s*}/g, '}'); // Remove trailing commas
+        cleanResponse = cleanResponse.replace(/,\s*]/g, ']'); // Remove trailing commas before ]
+        cleanResponse = cleanResponse.replace(/,\s*}/g, '}'); // Remove trailing commas before }
+        cleanResponse = cleanResponse.replace(/([^"])\n/g, '$1'); // Remove line breaks not in strings
+        cleanResponse = cleanResponse.replace(/\s+/g, ' '); // Normalize whitespace
+        cleanResponse = cleanResponse.replace(/,\s*,/g, ','); // Remove duplicate commas
+        cleanResponse = cleanResponse.replace(/"\s*:\s*"([^"]*)"([^,}\]]*)/g, '":"$1"'); // Fix broken strings
         
         console.log("Cleaned response:", cleanResponse.substring(0, 500) + "...");
         
@@ -262,9 +266,9 @@ Create company-specific and role-specific questions.`
         
         // Try AI generation one more time with simpler prompt
         try {
-          const simpleMessages = [
+          const simpleMessages: OpenRouterMessage[] = [
             { 
-              role: 'system', 
+              role: 'system' as const, 
               content: `Generate exactly 100 interview questions as a pure JSON array. No explanations, no markdown.
 
 STRUCTURE: 60 technical (20 easy, 20 medium, 20 hard) + 25 behavioral + 15 coding (5 easy, 5 medium, 5 hard)
@@ -276,7 +280,7 @@ For coding questions add: "context":"...", "constraints":["..."], "examples":[{"
 Return ONLY the JSON array.` 
             },
             { 
-              role: 'user', 
+              role: 'user' as const, 
               content: `Company: ${formData.companyName || 'Tech Company'}
 Role: ${formData.jobTitle || 'Software Engineer'}
 Job Details: ${formData.jobDescription.substring(0, 600)}
