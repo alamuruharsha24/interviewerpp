@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSession } from "@/contexts/SessionContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { generateQuestionsWithAI } from "@/lib/aiQuestionGenerator";
+import { generateComprehensiveQuestions } from "@/lib/aiQuestionGeneratorEnhanced";
 import { Question } from "@shared/schema";
 import { Sparkles, Loader2 } from "lucide-react";
 
@@ -59,8 +59,8 @@ export default function UploadForm({ onSessionCreated }: UploadFormProps) {
 
       console.log("🚀 Starting AI question generation process...");
       
-      // Generate questions using the robust AI system
-      const aiResult = await generateQuestionsWithAI(
+      // Generate questions using the enhanced AI system
+      const aiResult = await generateComprehensiveQuestions(
         formData.jobDescription,
         formData.resume,
         formData.jobTitle,

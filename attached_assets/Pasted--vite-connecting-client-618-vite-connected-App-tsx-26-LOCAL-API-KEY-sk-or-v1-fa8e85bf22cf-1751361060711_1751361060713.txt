@@ -1,0 +1,95 @@
+[vite] connecting...
+client:618 [vite] connected.
+App.tsx:26 🔐 LOCAL API KEY: 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
+3App.tsx:26 🔐 LOCAL API KEY: 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
+iframe.js:310 Info: The current domain is not authorized for OAuth operations. This will prevent signInWithPopup, signInWithRedirect, linkWithPopup and linkWithRedirect from working. Add your domain (790176a0-5b93-44b1-87c4-815c213ee7b5-00-1gbp4192h2czm.pike.replit.dev) to the OAuth redirect domains list in the Firebase console -> Authentication -> Settings -> Authorized domains tab.
+ml @ iframe.js:310
+(anonymous) @ iframe.js:579
+a @ iframe.js:155
+(anonymous) @ iframe.js:155
+c @ iframe.js:155
+e.vd @ iframe.js:163
+lg @ iframe.js:166
+hg @ iframe.js:166
+F.zk @ iframe.js:165
+a @ iframe.js:155
+(anonymous) @ iframe.js:155
+c @ iframe.js:155
+Qf @ iframe.js:156
+a
+Jf @ iframe.js:156
+cg @ iframe.js:162
+k.l @ iframe.js:160
+os @ iframe.js:578
+(anonymous) @ iframe.js:579
+aj @ iframe.js:240
+b @ iframe.js:238Understand this warning
+UploadForm.tsx:60 🚀 Starting AI question generation process...
+aiQuestionGenerator.ts:786 🚀 Starting AI question generation...
+aiQuestionGenerator.ts:822 📡 Calling AI API...
+aiQuestionGenerator.ts:824 ✅ AI response received, length: 16849
+aiQuestionGenerator.ts:828 🧹 Cleaned response length: 16504
+aiQuestionGenerator.ts:829 🧹 First 200 chars: [ {"id":"tech_1","type":"technical","difficulty":"easy","question":"What is ReactJS and how does it differ from other JavaScript frameworks?"}, {"id":"tech_2","type":"technical","difficulty":"easy","q
+aiQuestionGenerator.ts:836 ❌ JSON parse error: SyntaxError: Expected ',' or ']' after array element in JSON at position 16504 (line 1 column 16505)
+    at JSON.parse (<anonymous>)
+    at generateQuestionsWithAI (aiQuestionGenerator.ts:834:30)
+    at async handleSubmit (UploadForm.tsx:63:24)
+generateQuestionsWithAI @ aiQuestionGenerator.ts:836
+await in generateQuestionsWithAI
+handleSubmit @ UploadForm.tsx:63
+callCallback2 @ chunk-F3OYNICX.js?v=0e3d68a6:3674
+invokeGuardedCallbackDev @ chunk-F3OYNICX.js?v=0e3d68a6:3699
+invokeGuardedCallback @ chunk-F3OYNICX.js?v=0e3d68a6:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-F3OYNICX.js?v=0e3d68a6:3736
+executeDispatch @ chunk-F3OYNICX.js?v=0e3d68a6:7014
+processDispatchQueueItemsInOrder @ chunk-F3OYNICX.js?v=0e3d68a6:7034
+processDispatchQueue @ chunk-F3OYNICX.js?v=0e3d68a6:7043
+dispatchEventsForPlugins @ chunk-F3OYNICX.js?v=0e3d68a6:7051
+(anonymous) @ chunk-F3OYNICX.js?v=0e3d68a6:7174
+batchedUpdates$1 @ chunk-F3OYNICX.js?v=0e3d68a6:18913
+batchedUpdates @ chunk-F3OYNICX.js?v=0e3d68a6:3579
+dispatchEventForPluginEventSystem @ chunk-F3OYNICX.js?v=0e3d68a6:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-F3OYNICX.js?v=0e3d68a6:5478
+dispatchEvent @ chunk-F3OYNICX.js?v=0e3d68a6:5472
+dispatchDiscreteEvent @ chunk-F3OYNICX.js?v=0e3d68a6:5449Understand this error
+aiQuestionGenerator.ts:837 📝 Failed response: [ {"id":"tech_1","type":"technical","difficulty":"easy","question":"What is ReactJS and how does it differ from other JavaScript frameworks?"}, {"id":"tech_2","type":"technical","difficulty":"easy","question":"Explain the concept of virtual DOM in React."}, {"id":"tech_3","type":"technical","difficulty":"easy","question":"What are the key features of ReactJS that make it suitable for building quick commerce applications?"}, {"id":"tech_4","type":"technical","difficulty":"easy","question":"What i
+aiQuestionGenerator.ts:864 ❌ AI generation failed: Invalid JSON response from AI
+generateQuestionsWithAI @ aiQuestionGenerator.ts:864
+await in generateQuestionsWithAI
+handleSubmit @ UploadForm.tsx:63
+callCallback2 @ chunk-F3OYNICX.js?v=0e3d68a6:3674
+invokeGuardedCallbackDev @ chunk-F3OYNICX.js?v=0e3d68a6:3699
+invokeGuardedCallback @ chunk-F3OYNICX.js?v=0e3d68a6:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-F3OYNICX.js?v=0e3d68a6:3736
+executeDispatch @ chunk-F3OYNICX.js?v=0e3d68a6:7014
+processDispatchQueueItemsInOrder @ chunk-F3OYNICX.js?v=0e3d68a6:7034
+processDispatchQueue @ chunk-F3OYNICX.js?v=0e3d68a6:7043
+dispatchEventsForPlugins @ chunk-F3OYNICX.js?v=0e3d68a6:7051
+(anonymous) @ chunk-F3OYNICX.js?v=0e3d68a6:7174
+batchedUpdates$1 @ chunk-F3OYNICX.js?v=0e3d68a6:18913
+batchedUpdates @ chunk-F3OYNICX.js?v=0e3d68a6:3579
+dispatchEventForPluginEventSystem @ chunk-F3OYNICX.js?v=0e3d68a6:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-F3OYNICX.js?v=0e3d68a6:5478
+dispatchEvent @ chunk-F3OYNICX.js?v=0e3d68a6:5472
+dispatchDiscreteEvent @ chunk-F3OYNICX.js?v=0e3d68a6:5449Understand this error
+UploadForm.tsx:71 AI generation had issues: Invalid JSON response from AI
+handleSubmit @ UploadForm.tsx:71
+await in handleSubmit
+callCallback2 @ chunk-F3OYNICX.js?v=0e3d68a6:3674
+invokeGuardedCallbackDev @ chunk-F3OYNICX.js?v=0e3d68a6:3699
+invokeGuardedCallback @ chunk-F3OYNICX.js?v=0e3d68a6:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-F3OYNICX.js?v=0e3d68a6:3736
+executeDispatch @ chunk-F3OYNICX.js?v=0e3d68a6:7014
+processDispatchQueueItemsInOrder @ chunk-F3OYNICX.js?v=0e3d68a6:7034
+processDispatchQueue @ chunk-F3OYNICX.js?v=0e3d68a6:7043
+dispatchEventsForPlugins @ chunk-F3OYNICX.js?v=0e3d68a6:7051
+(anonymous) @ chunk-F3OYNICX.js?v=0e3d68a6:7174
+batchedUpdates$1 @ chunk-F3OYNICX.js?v=0e3d68a6:18913
+batchedUpdates @ chunk-F3OYNICX.js?v=0e3d68a6:3579
+dispatchEventForPluginEventSystem @ chunk-F3OYNICX.js?v=0e3d68a6:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-F3OYNICX.js?v=0e3d68a6:5478
+dispatchEvent @ chunk-F3OYNICX.js?v=0e3d68a6:5472
+dispatchDiscreteEvent @ chunk-F3OYNICX.js?v=0e3d68a6:5449Understand this warning
+UploadForm.tsx:87 📝 Creating session with questions...
+UploadForm.tsx:105 ✅ Session created successfully: xAOr7HHGgWiUUPpTk4Rnl
+2App.tsx:26 🔐 LOCAL API KEY: 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

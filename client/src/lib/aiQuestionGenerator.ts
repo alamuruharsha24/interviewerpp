@@ -8,7 +8,7 @@ export interface QuestionGenerationResult {
 }
 
 // Comprehensive fallback questions (100 total) for when AI fails
-const FALLBACK_QUESTIONS: Question[] = [
+export const FALLBACK_QUESTIONS: Question[] = [
   // Technical Questions - Easy (20)
   {
     id: "tech_easy_1",
@@ -703,23 +703,30 @@ function cleanJsonResponse(response: string): string {
   // Remove markdown code blocks
   let cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '');
   
-  // Remove any text before the first [ or {
-  const jsonStart = Math.min(
-    cleaned.indexOf('[') >= 0 ? cleaned.indexOf('[') : Infinity,
-    cleaned.indexOf('{') >= 0 ? cleaned.indexOf('{') : Infinity
-  );
-  
-  if (jsonStart < Infinity) {
+  // Remove any text before the first [
+  const jsonStart = cleaned.indexOf('[');
+  if (jsonStart >= 0) {
     cleaned = cleaned.substring(jsonStart);
   }
   
-  // Find the last ] or }
-  const lastBracket = cleaned.lastIndexOf(']');
-  const lastBrace = cleaned.lastIndexOf('}');
-  const jsonEnd = Math.max(lastBracket, lastBrace);
+  // Find the last complete ] - look for the last ] that has proper nesting
+  let bracketCount = 0;
+  let lastValidEnd = -1;
   
-  if (jsonEnd > 0) {
-    cleaned = cleaned.substring(0, jsonEnd + 1);
+  for (let i = 0; i < cleaned.length; i++) {
+    if (cleaned[i] === '[') {
+      bracketCount++;
+    } else if (cleaned[i] === ']') {
+      bracketCount--;
+      if (bracketCount === 0) {
+        lastValidEnd = i;
+        break; // Found the complete array
+      }
+    }
+  }
+  
+  if (lastValidEnd > 0) {
+    cleaned = cleaned.substring(0, lastValidEnd + 1);
   }
   
   // Fix common JSON issues
@@ -729,6 +736,8 @@ function cleanJsonResponse(response: string): string {
     .replace(/([^"])\n/g, '$1')       // Remove newlines not in strings
     .replace(/\s+/g, ' ')             // Normalize whitespace
     .replace(/,\s*,/g, ',')           // Remove duplicate commas
+    .replace(/"\s*:\s*"/g, '":"')     // Fix spaced colons
+    .replace(/([^\\])"/g, '$1"')      // Fix unescaped quotes
     .trim();
   
   return cleaned;
@@ -788,7 +797,7 @@ export async function generateQuestionsWithAI(
     const messages: OpenRouterMessage[] = [
       {
         role: "system",
-        content: `You are an expert technical interviewer. Generate exactly 100 interview questions based on the provided job description and resume.
+        content: `You are an expert technical interviewer. Generate exactly 50 interview questions based on the provided job description and resume.
 
 CRITICAL REQUIREMENTS:
 - Return ONLY a valid JSON array
@@ -797,9 +806,9 @@ CRITICAL REQUIREMENTS:
 - For coding questions add: context, constraints (array), examples (array with input/output/explanation)
 
 DISTRIBUTION:
-- 60 technical questions (20 easy, 20 medium, 20 hard)
-- 25 behavioral questions (all medium difficulty)
-- 15 coding questions (5 easy, 5 medium, 5 hard)
+- 30 technical questions (10 easy, 10 medium, 10 hard)
+- 15 behavioral questions (all medium difficulty)
+- 5 coding questions (2 easy, 2 medium, 1 hard)
 
 EXAMPLE FORMAT:
 [
@@ -828,14 +837,79 @@ Generate questions tailored to this specific role and company.`
     console.log("🧹 Cleaned response length:", cleanedResponse.length);
     console.log("🧹 First 200 chars:", cleanedResponse.substring(0, 200));
     
-    // Parse JSON
+    // Parse JSON with multiple attempts
     let parsedQuestions: any[];
     try {
       parsedQuestions = JSON.parse(cleanedResponse);
     } catch (parseError) {
       console.error("❌ JSON parse error:", parseError);
-      console.log("📝 Failed response:", cleanedResponse.substring(0, 500));
-      throw new Error("Invalid JSON response from AI");
+      console.log("📝 Failed response sample:", cleanedResponse.substring(0, 500));
+      
+      // Try to extract valid JSON objects manually
+      try {
+        const objects = [];
+        let currentObj = '';
+        let braceCount = 0;
+        let inString = false;
+        let escapeNext = false;
+        
+        for (let i = 1; i < cleanedResponse.length - 1; i++) { // Skip opening [
+          const char = cleanedResponse[i];
+          
+          if (escapeNext) {
+            currentObj += char;
+            escapeNext = false;
+            continue;
+          }
+          
+          if (char === '\\') {
+            escapeNext = true;
+            currentObj += char;
+            continue;
+          }
+          
+          if (char === '"' && !escapeNext) {
+            inString = !inString;
+            currentObj += char;
+            continue;
+          }
+          
+          if (!inString) {
+            if (char === '{') {
+              braceCount++;
+              currentObj += char;
+            } else if (char === '}') {
+              braceCount--;
+              currentObj += char;
+              
+              if (braceCount === 0 && currentObj.trim()) {
+                try {
+                  const obj = JSON.parse(currentObj.trim());
+                  objects.push(obj);
+                  currentObj = '';
+                } catch (e) {
+                  // Skip invalid object
+                  currentObj = '';
+                }
+              }
+            } else if (braceCount > 0) {
+              currentObj += char;
+            }
+          } else {
+            currentObj += char;
+          }
+        }
+        
+        if (objects.length > 0) {
+          parsedQuestions = objects;
+          console.log(`✅ Recovered ${objects.length} questions from malformed JSON`);
+        } else {
+          throw new Error("Could not extract valid JSON objects");
+        }
+      } catch (recoveryError) {
+        console.error("❌ JSON recovery failed:", recoveryError);
+        throw new Error("Invalid JSON response from AI");
+      }
     }
     
     if (!Array.isArray(parsedQuestions)) {
@@ -846,25 +920,25 @@ Generate questions tailored to this specific role and company.`
     const validQuestions = validateQuestions(parsedQuestions);
     console.log(`✅ Generated ${validQuestions.length} valid questions`);
     
-    if (validQuestions.length < 50) {
+    if (validQuestions.length < 20) {
       console.warn("⚠️ Too few valid questions generated, using fallback");
       return {
         success: false,
-        questions: FALLBACK_QUESTIONS.slice(0, 100),
+        questions: FALLBACK_QUESTIONS.slice(0, 50),
         error: "AI generated too few valid questions"
       };
     }
     
     return {
       success: true,
-      questions: validQuestions.slice(0, 100) // Ensure we don't exceed 100
+      questions: validQuestions.slice(0, 50) // Ensure we don't exceed 50
     };
     
   } catch (error: any) {
     console.error("❌ AI generation failed:", error.message);
     return {
       success: false,
-      questions: FALLBACK_QUESTIONS.slice(0, 100),
+      questions: FALLBACK_QUESTIONS.slice(0, 50),
       error: error.message
     };
   }
