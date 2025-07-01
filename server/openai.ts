@@ -1,14 +1,19 @@
 import OpenAI from "openai";
 
 // OpenRouter API configuration for DeepSeek model
-const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
-  defaultHeaders: {
-    "HTTP-Referer": "https://interviewgenie.replit.app",
-    "X-Title": "InterviewGenie"
-  }
-});
+let openai: OpenAI | null = null;
+
+// Only initialize OpenAI if API key is available
+if (process.env.OPENAI_API_KEY) {
+  openai = new OpenAI({ 
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1",
+    defaultHeaders: {
+      "HTTP-Referer": "https://interviewgenie.replit.app",
+      "X-Title": "InterviewGenie"
+    }
+  });
+}
 
 export interface DSAQuestion {
   id: string;
@@ -413,12 +418,18 @@ const fallbackDSAQuestions: DSAQuestion[] = [
 
 export async function generateDSAQuestions(): Promise<DSAQuestion[]> {
   // Check if OpenAI API key exists and is valid
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY || !openai) {
     console.log("No API key found, returning fallback questions");
     return fallbackDSAQuestions;
   }
 
   try {
+    // TypeScript null check - this should never be null at this point due to the check above
+    if (!openai) {
+      console.log("OpenAI client is null, returning fallback questions");
+      return fallbackDSAQuestions;
+    }
+
     const response = await openai.chat.completions.create({
       model: "deepseek/deepseek-r1-0528:free",
       messages: [
