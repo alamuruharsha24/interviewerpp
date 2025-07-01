@@ -85,7 +85,7 @@ export default function UploadForm({ onSessionCreated }: UploadFormProps) {
 
       // Create session with generated questions
       console.log("📝 Creating session with questions...");
-      const sessionResponse = await apiRequest(`/api/sessions`, {
+      const sessionResponse = await fetch(`/api/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
