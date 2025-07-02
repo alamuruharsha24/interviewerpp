@@ -133,29 +133,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // DSA Questions route - Company-specific generation
   app.post("/api/dsa/generate", async (req, res) => {
     try {
+      console.log("DSA generation request received:", req.body);
       const { companyName } = req.body;
       
-      if (!companyName || typeof companyName !== 'string') {
-        return res.status(400).json({ error: "Company name is required" });
+      if (!companyName || typeof companyName !== 'string' || companyName.trim() === '') {
+        console.log("Invalid company name:", companyName);
+        return res.status(400).json({ error: "Company name is required and must be a non-empty string" });
       }
 
       // Import the DSA generator
       const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
       
-      console.log(`Generating DSA questions for company: ${companyName}`);
-      const result = await generateCompanySpecificDSAQuestions(companyName);
+      console.log(`🚀 Generating DSA questions for company: ${companyName}`);
+      const result = await generateCompanySpecificDSAQuestions(companyName.trim());
       
       if (!result.success) {
-        console.warn(`DSA generation had issues: ${result.error}`);
+        console.warn(`⚠️ DSA generation had issues: ${result.error}`);
+      } else {
+        console.log(`✅ Successfully generated ${result.questions.length} DSA questions`);
       }
       
       res.json({ 
         questions: result.questions,
         success: result.success,
-        company: companyName 
+        company: companyName.trim() 
       });
     } catch (error: any) {
-      console.error("DSA generation error:", error);
+      console.error("❌ DSA generation error:", error);
       res.status(500).json({ error: error.message });
     }
   });

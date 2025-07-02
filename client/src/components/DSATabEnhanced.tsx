@@ -75,16 +75,23 @@ export default function DSATabEnhanced() {
     setLoading(true);
     
     try {
+      console.log("🚀 Starting DSA generation for company:", companyName);
+      
       toast({
         title: "🤖 Generating DSA Questions",
         description: `Creating ${companyName}-specific coding questions tailored to their interview patterns...`,
       });
 
+      const requestBody = { companyName: companyName.trim() };
+      console.log("📤 Sending request with body:", requestBody);
+
       const response = await fetch('/api/dsa/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ companyName }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log("📥 Response status:", response.status, response.statusText);
 
       if (!response.ok) {
         throw new Error('Failed to generate DSA questions');
