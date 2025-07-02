@@ -134,25 +134,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/dsa/generate/:company?", async (req, res) => {
     try {
       const companyName = req.params.company || 'Google';
-      console.log(`🚀 GET DSA questions for: ${companyName}`);
+      console.log(`🚀 GET AI DSA questions for: ${companyName}`);
       
-      const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
-      const result = await generateCompanySpecificDSAQuestions(companyName);
+      const { generateAIFocusedDSAQuestions } = await import('./dsaQuestionGeneratorEnhanced');
+      const result = await generateAIFocusedDSAQuestions(companyName);
       
-      res.json({ 
-        questions: result.questions,
-        success: result.success,
-        company: companyName 
-      });
+      if (result.success) {
+        res.json({ 
+          questions: result.questions,
+          success: result.success,
+          company: companyName 
+        });
+      } else {
+        // If AI fails, retry once more
+        console.log("🔄 Retrying AI generation once more...");
+        const retryResult = await generateAIFocusedDSAQuestions(companyName);
+        res.json({ 
+          questions: retryResult.questions,
+          success: retryResult.success,
+          company: companyName,
+          error: retryResult.error
+        });
+      }
     } catch (error: any) {
+      const companyName = req.params.company || 'Google';
       console.error("❌ GET DSA generation error:", error);
-      const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
-      const fallbackResult = await generateCompanySpecificDSAQuestions('Google');
-      
-      res.json({ 
-        questions: fallbackResult.questions,
+      res.status(500).json({ 
+        questions: [],
         success: false,
-        company: 'Google (Fallback)',
+        company: companyName,
         error: error.message
       });
     }
@@ -174,11 +184,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         companyName = 'Google'; // Default company to ensure generation works
       }
 
-      // Import the DSA generator
-      const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
+      // Import the enhanced AI-focused DSA generator
+      const { generateAIFocusedDSAQuestions } = await import('./dsaQuestionGeneratorEnhanced');
       
-      console.log(`🚀 Generating DSA questions for company: ${companyName}`);
-      const result = await generateCompanySpecificDSAQuestions(companyName.trim());
+      console.log(`🚀 Generating AI-focused DSA questions for company: ${companyName}`);
+      const result = await generateAIFocusedDSAQuestions(companyName.trim());
       
       if (!result.success) {
         console.warn(`⚠️ DSA generation had issues: ${result.error}`);
@@ -194,19 +204,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("❌ DSA generation error:", error);
       
-      // Even if there's an error, return fallback questions
+      // Retry AI generation one more time
       try {
-        const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
-        const fallbackResult = await generateCompanySpecificDSAQuestions('Google');
+        console.log("🔄 Retrying AI DSA generation after error...");
+        const { generateAIFocusedDSAQuestions } = await import('./dsaQuestionGeneratorEnhanced');
+        const retryResult = await generateAIFocusedDSAQuestions('Google');
         
         res.json({ 
-          questions: fallbackResult.questions,
-          success: false,
-          company: 'Google (Fallback)',
-          error: error.message
+          questions: retryResult.questions,
+          success: retryResult.success,
+          company: 'Google (Retry)',
+          error: retryResult.error || error.message
         });
-      } catch (fallbackError) {
-        res.status(500).json({ error: error.message });
+      } catch (retryError) {
+        console.error("❌ Final retry also failed:", retryError);
+        res.status(500).json({ 
+          error: `Both attempts failed: ${error.message}`,
+          questions: [],
+          success: false
+        });
       }
     }
   });

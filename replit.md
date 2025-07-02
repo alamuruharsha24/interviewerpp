@@ -133,6 +133,11 @@ Changelog:
 - July 2, 2025. Added comprehensive error handling and retry logic for both client and server-side API calls
 - July 2, 2025. Enhanced system reliability with automatic API key rotation when keys fail
 - July 2, 2025. Integrated failover system across all AI generation endpoints (DSA, question generation, answer evaluation)
+- July 2, 2025. CRITICAL UPDATE: Created AI-focused DSA question generator that generates high-frequency interview questions
+- July 2, 2025. Enhanced DSA generation to prioritize commonly asked questions (80%+ interview frequency)
+- July 2, 2025. Removed fallback questions - system now generates 100% AI-powered DSA questions using DeepSeek model
+- July 2, 2025. Added auto-generation of DSA questions on page load with multiple retry mechanisms
+- July 2, 2025. Implemented real LeetCode and GeeksforGeeks URLs in AI-generated DSA questions
 
 ## User Preferences
 
