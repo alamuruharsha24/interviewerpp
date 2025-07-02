@@ -136,8 +136,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const companyName = req.params.company || 'Google';
       console.log(`🚀 GET AI DSA questions for: ${companyName}`);
       
-      const { generateAIFocusedDSAQuestions } = await import('./dsaQuestionGeneratorEnhanced');
-      const result = await generateAIFocusedDSAQuestions(companyName);
+      const { generateSimpleDSAQuestions } = await import('./dsaGeneratorSimple');
+      const result = await generateSimpleDSAQuestions(companyName);
       
       if (result.success) {
         res.json({ 
@@ -148,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         // If AI fails, retry once more
         console.log("🔄 Retrying AI generation once more...");
-        const retryResult = await generateAIFocusedDSAQuestions(companyName);
+        const retryResult = await generateSimpleDSAQuestions(companyName);
         res.json({ 
           questions: retryResult.questions,
           success: retryResult.success,
@@ -184,11 +184,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         companyName = 'Google'; // Default company to ensure generation works
       }
 
-      // Import the enhanced AI-focused DSA generator
-      const { generateAIFocusedDSAQuestions } = await import('./dsaQuestionGeneratorEnhanced');
+      // Import the simple, reliable DSA generator
+      const { generateSimpleDSAQuestions } = await import('./dsaGeneratorSimple');
       
-      console.log(`🚀 Generating AI-focused DSA questions for company: ${companyName}`);
-      const result = await generateAIFocusedDSAQuestions(companyName.trim());
+      console.log(`🚀 Generating simple DSA questions for company: ${companyName}`);
+      const result = await generateSimpleDSAQuestions(companyName.trim());
       
       if (!result.success) {
         console.warn(`⚠️ DSA generation had issues: ${result.error}`);
@@ -207,8 +207,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Retry AI generation one more time
       try {
         console.log("🔄 Retrying AI DSA generation after error...");
-        const { generateAIFocusedDSAQuestions } = await import('./dsaQuestionGeneratorEnhanced');
-        const retryResult = await generateAIFocusedDSAQuestions('Google');
+        const { generateSimpleDSAQuestions } = await import('./dsaGeneratorSimple');
+        const retryResult = await generateSimpleDSAQuestions('Google');
         
         res.json({ 
           questions: retryResult.questions,
