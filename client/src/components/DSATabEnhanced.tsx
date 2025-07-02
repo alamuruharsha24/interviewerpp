@@ -36,12 +36,30 @@ export default function DSATabEnhanced() {
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [topicFilter, setTopicFilter] = useState<string>("all");
 
-  // Auto-generate questions on component mount
+  // Auto-generate questions on component mount and when company changes
   useEffect(() => {
     if (questions.length === 0) {
       handleGenerateQuestions();
     }
   }, []);
+
+  // Auto-regenerate when company selection changes
+  useEffect(() => {
+    if (questions.length > 0) {
+      handleGenerateQuestions();
+    }
+  }, [selectedCompany]);
+
+  // Auto-regenerate when custom company changes (with debounce)
+  useEffect(() => {
+    if (customCompany.trim() && questions.length > 0) {
+      const timer = setTimeout(() => {
+        handleGenerateQuestions();
+      }, 1500); // Wait 1.5 seconds after user stops typing
+      
+      return () => clearTimeout(timer);
+    }
+  }, [customCompany]);
 
   // Filter questions based on search and filters
   const filteredQuestions = questions.filter(question => {
@@ -239,29 +257,18 @@ export default function DSATabEnhanced() {
             </div>
           </div>
 
-          <Button
-            onClick={handleGenerateQuestions}
-            disabled={loading || (!selectedCompany && !customCompany.trim())}
-            className="w-full"
-            size="lg"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Generating Questions...
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4 mr-2" />
-                Generate 30+ DSA Questions
-              </>
-            )}
-          </Button>
-
           {loading && (
-            <div className="text-center text-sm text-muted-foreground">
-              <p>🤖 AI is analyzing {customCompany || selectedCompany} interview patterns...</p>
-              <p>This may take 30-60 seconds</p>
+            <div className="text-center text-sm text-muted-foreground border rounded-lg p-4 bg-muted/50">
+              <Loader2 className="h-6 w-6 mx-auto mb-2 animate-spin text-blue-500" />
+              <p className="font-medium">🤖 AI is analyzing {customCompany || selectedCompany} interview patterns...</p>
+              <p className="text-xs">Questions will auto-generate based on your company selection</p>
+            </div>
+          )}
+
+          {!loading && questions.length > 0 && (
+            <div className="text-center text-sm text-green-700 bg-green-50 rounded-lg p-3">
+              <p className="font-medium">✅ {questions.length} AI-generated questions ready for {customCompany || selectedCompany}</p>
+              <p className="text-xs">Select a different company to generate new questions automatically</p>
             </div>
           )}
         </CardContent>
