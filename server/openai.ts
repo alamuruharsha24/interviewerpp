@@ -1,18 +1,14 @@
 import OpenAI from "openai";
+import { apiKeyManager } from './apiKeyManager';
 
 // OpenRouter API configuration for DeepSeek model
-let openai: OpenAI | null = null;
+let OpenAIConstructor: typeof OpenAI | null = null;
 
-// Only initialize OpenAI if API key is available
-if (process.env.OPENAI_API_KEY) {
-  openai = new OpenAI({ 
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
-    defaultHeaders: {
-      "HTTP-Referer": "https://interviewgenie.replit.app",
-      "X-Title": "InterviewGenie"
-    }
-  });
+// Only initialize OpenAI if OpenAI module is available
+try {
+  OpenAIConstructor = OpenAI;
+} catch (error) {
+  console.warn("OpenAI module not available");
 }
 
 export interface DSAQuestion {
@@ -417,71 +413,106 @@ const fallbackDSAQuestions: DSAQuestion[] = [
 ];
 
 export async function generateDSAQuestions(): Promise<DSAQuestion[]> {
-  // Check if OpenAI API key exists and is valid
-  if (!process.env.OPENAI_API_KEY || !openai) {
-    console.log("No API key found, returning fallback questions");
+  // Check if OpenAI module is available
+  if (!OpenAIConstructor) {
+    console.log("OpenAI module not available, returning fallback questions");
     return fallbackDSAQuestions;
   }
 
-  try {
-    // TypeScript null check - this should never be null at this point due to the check above
-    if (!openai) {
-      console.log("OpenAI client is null, returning fallback questions");
-      return fallbackDSAQuestions;
-    }
+  const maxRetries = 3;
+  let lastError: Error | null = null;
 
-    const response = await openai.chat.completions.create({
-      model: "deepseek/deepseek-chat-v3-0324:free",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert in Data Structures and Algorithms. Generate exactly 30 coding questions with varying difficulty levels. 
-          Each question should include:
-          - A unique title
-          - Difficulty (easy/medium/hard) - distribute evenly (10 easy, 10 medium, 10 hard)
-          - Topic (arrays, strings, linked lists, trees, graphs, dynamic programming, sorting, searching, etc.)
-          - Clear description
-          - Relevant tags
-          - Time and space complexity hints
-          
-          For each question, try to match it with real LeetCode or GeeksforGeeks problems when possible.
-          
-          Make sure to cover these topics:
-          - Arrays and Strings (8 questions)
-          - Linked Lists (3 questions)
-          - Trees and Binary Search Trees (5 questions)
-          - Graphs (4 questions)
-          - Dynamic Programming (4 questions)
-          - Sorting and Searching (3 questions)
-          - Stack and Queue (3 questions)
-          
-          Respond with JSON in this exact format:
-          {
-            "questions": [
-              {
-                "id": "1",
-                "title": "Two Sum",
-                "difficulty": "easy",
-                "topic": "Arrays",
-                "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-                "leetcodeUrl": "https://leetcode.com/problems/two-sum/",
-                "gfgUrl": "https://www.geeksforgeeks.org/given-an-array-a-and-a-number-x-check-for-pair-in-a-with-sum-as-x/",
-                "tags": ["array", "hash-table"],
-                "timeComplexity": "O(n)",
-                "spaceComplexity": "O(n)"
-              }
-            ]
-          }`
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const currentApiKey = apiKeyManager.getCurrentKey();
+      console.log(`🔄 DSA API attempt ${attempt + 1}/${maxRetries} with key #${apiKeyManager.getStats().total - apiKeyManager.getStats().working + 1}`);
+      
+      const openai = new OpenAIConstructor({
+        baseURL: "https://openrouter.ai/api/v1",
+        apiKey: currentApiKey,
+        defaultHeaders: {
+          "HTTP-Referer": "https://interviewgenie.replit.app",
+          "X-Title": "InterviewGenie"
         }
-      ],
-      temperature: 0.7
-    });
+      });
 
-    const result = JSON.parse(response.choices[0].message.content || "{}");
-    return result.questions || fallbackDSAQuestions;
-  } catch (error) {
-    console.error("Error generating DSA questions:", error);
-    console.log("Falling back to pre-defined questions");
-    return fallbackDSAQuestions;
+      const response = await openai.chat.completions.create({
+        model: "deepseek/deepseek-chat-v3-0324",
+        messages: [
+          {
+            role: "system",
+            content: `You are an expert in Data Structures and Algorithms. Generate exactly 30 coding questions with varying difficulty levels. 
+            Each question should include:
+            - A unique title
+            - Difficulty (easy/medium/hard) - distribute evenly (10 easy, 10 medium, 10 hard)
+            - Topic (arrays, strings, linked lists, trees, graphs, dynamic programming, sorting, searching, etc.)
+            - Clear description
+            - Relevant tags
+            - Time and space complexity hints
+            
+            For each question, try to match it with real LeetCode or GeeksforGeeks problems when possible.
+            
+            Make sure to cover these topics:
+            - Arrays and Strings (8 questions)
+            - Linked Lists (3 questions)
+            - Trees and Binary Search Trees (5 questions)
+            - Graphs (4 questions)
+            - Dynamic Programming (4 questions)
+            - Sorting and Searching (3 questions)
+            - Stack and Queue (3 questions)
+            
+            Respond with JSON in this exact format:
+            {
+              "questions": [
+                {
+                  "id": "1",
+                  "title": "Two Sum",
+                  "difficulty": "easy",
+                  "topic": "Arrays",
+                  "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+                  "leetcodeUrl": "https://leetcode.com/problems/two-sum/",
+                  "gfgUrl": "https://www.geeksforgeeks.org/given-an-array-a-and-a-number-x-check-for-pair-in-a-with-sum-as-x/",
+                  "tags": ["array", "hash-table"],
+                  "timeComplexity": "O(n)",
+                  "spaceComplexity": "O(n)"
+                }
+              ]
+            }`
+          }
+        ],
+        temperature: 0.7
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || "{}");
+      console.log(`✅ DSA API success on attempt ${attempt + 1}`);
+      return result.questions || fallbackDSAQuestions;
+    } catch (error: any) {
+      lastError = error;
+      console.error(`❌ DSA API error on attempt ${attempt + 1}:`, error.message);
+      
+      // Check if it's an API key related error
+      if (error.status === 401 || error.status === 403 || error.message.includes('authentication') || error.message.includes('unauthorized')) {
+        console.log('🔑 API key authentication failed, marking as failed and trying next key');
+        apiKeyManager.markKeyAsFailed(apiKeyManager.getCurrentKey());
+        
+        // If we still have working keys, continue to next attempt
+        if (apiKeyManager.getWorkingKeysCount() > 0) {
+          continue;
+        } else {
+          console.log('⚠️ No more working API keys available');
+          break;
+        }
+      }
+      
+      // For other errors, wait a bit before retrying
+      if (attempt < maxRetries - 1) {
+        console.log(`⏳ Waiting 2 seconds before retry...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
   }
+
+  console.error(`💥 All DSA API attempts failed. Stats:`, apiKeyManager.getStats());
+  console.log("Falling back to pre-defined questions");
+  return fallbackDSAQuestions;
 }

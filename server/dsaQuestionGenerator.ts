@@ -1,17 +1,12 @@
-// Import OpenAI client
-let openai: any = null;
+// Import OpenAI client and API key manager
+import { apiKeyManager } from './apiKeyManager';
+
+let OpenAI: any = null;
 try {
-  const { OpenAI } = require('openai');
-  
-  // Initialize OpenAI client for server-side
-  if (process.env.VITE_OPENROUTER_API_KEY) {
-    openai = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.VITE_OPENROUTER_API_KEY,
-    });
-  }
+  const openaiModule = require('openai');
+  OpenAI = openaiModule.OpenAI;
 } catch (error) {
-  console.warn("OpenAI not available, using fallback questions");
+  console.warn("OpenAI module not available, using fallback questions");
 }
 
 export interface DSAQuestion {
@@ -434,18 +429,66 @@ const FALLBACK_DSA_QUESTIONS: DSAQuestion[] = [
 ];
 
 async function callDeepSeek(messages: any[]): Promise<string> {
-  if (!openai) {
-    throw new Error("OpenAI client not initialized");
+  if (!OpenAI) {
+    throw new Error("OpenAI module not available");
   }
 
-  const completion = await openai.chat.completions.create({
-    model: "deepseek/deepseek-chat",
-    messages: messages,
-    max_tokens: 4000,
-    temperature: 0.7,
-  });
+  const maxRetries = 3;
+  let lastError: Error | null = null;
 
-  return completion.choices[0].message.content;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const currentApiKey = apiKeyManager.getCurrentKey();
+      console.log(`🔄 DeepSeek API attempt ${attempt + 1}/${maxRetries} with key #${apiKeyManager.getStats().total - apiKeyManager.getStats().working + 1}`);
+      
+      const openai = new OpenAI({
+        baseURL: "https://openrouter.ai/api/v1",
+        apiKey: currentApiKey,
+      });
+
+      const completion = await openai.chat.completions.create({
+        model: "deepseek/deepseek-chat-v3-0324",
+        messages: messages,
+        max_tokens: 4000,
+        temperature: 0.7,
+
+      });
+
+      const content = completion.choices[0]?.message?.content;
+      if (!content) {
+        throw new Error("No content received from API");
+      }
+
+      console.log(`✅ DeepSeek API success on attempt ${attempt + 1}`);
+      return content;
+    } catch (error: any) {
+      lastError = error;
+      console.error(`❌ DeepSeek API error on attempt ${attempt + 1}:`, error.message);
+      
+      // Check if it's an API key related error
+      if (error.status === 401 || error.status === 403 || error.message.includes('authentication') || error.message.includes('unauthorized')) {
+        console.log('🔑 API key authentication failed, marking as failed and trying next key');
+        apiKeyManager.markKeyAsFailed(apiKeyManager.getCurrentKey());
+        
+        // If we still have working keys, continue to next attempt
+        if (apiKeyManager.getWorkingKeysCount() > 0) {
+          continue;
+        } else {
+          console.log('⚠️ No more working API keys available');
+          break;
+        }
+      }
+      
+      // For other errors, wait a bit before retrying
+      if (attempt < maxRetries - 1) {
+        console.log(`⏳ Waiting 2 seconds before retry...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+  }
+
+  console.error(`💥 All DeepSeek API attempts failed. Stats:`, apiKeyManager.getStats());
+  throw lastError || new Error("DeepSeek API failed after all retries");
 }
 
 function cleanJsonResponse(response: string): string {
@@ -519,12 +562,12 @@ export async function generateCompanySpecificDSAQuestions(
 ): Promise<DSAGenerationResult> {
   
   try {
-    if (!openai) {
-      console.log("No API key found, returning fallback questions");
+    if (!OpenAI) {
+      console.log("OpenAI module not available, returning fallback questions");
       return {
         success: false,
         questions: FALLBACK_DSA_QUESTIONS.slice(0, 30),
-        error: "OpenAI client not available"
+        error: "OpenAI module not available"
       };
     }
 
