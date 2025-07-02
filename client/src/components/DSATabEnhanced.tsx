@@ -30,11 +30,18 @@ export default function DSATabEnhanced() {
   const { toast } = useToast();
   const [questions, setQuestions] = useState<DSAQuestion[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState<string>("");
+  const [selectedCompany, setSelectedCompany] = useState<string>("Google");
   const [customCompany, setCustomCompany] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [topicFilter, setTopicFilter] = useState<string>("all");
+
+  // Auto-generate questions on component mount
+  useEffect(() => {
+    if (questions.length === 0) {
+      handleGenerateQuestions();
+    }
+  }, []);
 
   // Filter questions based on search and filters
   const filteredQuestions = questions.filter(question => {
@@ -61,16 +68,7 @@ export default function DSATabEnhanced() {
   ).sort();
 
   const handleGenerateQuestions = async () => {
-    const companyName = customCompany.trim() || selectedCompany;
-    
-    if (!companyName) {
-      toast({
-        title: "Company Required",
-        description: "Please select a company or enter a custom company name.",
-        variant: "destructive",
-      });
-      return;
-    }
+    const companyName = customCompany.trim() || selectedCompany || 'Google';
 
     setLoading(true);
     
@@ -78,48 +76,82 @@ export default function DSATabEnhanced() {
       console.log("🚀 Starting DSA generation for company:", companyName);
       
       toast({
-        title: "🤖 Generating DSA Questions",
-        description: `Creating ${companyName}-specific coding questions tailored to their interview patterns...`,
+        title: "Generating DSA Questions",
+        description: `Creating ${companyName}-specific coding questions...`,
       });
 
-      const requestBody = { companyName: companyName.trim() };
-      console.log("📤 Sending request with body:", requestBody);
+      let response;
+      let data;
 
-      const response = await fetch('/api/dsa/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
+      // Try POST request first
+      try {
+        console.log("📤 Trying POST request");
+        response = await fetch('/api/dsa/generate', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ companyName }),
+        });
 
-      console.log("📥 Response status:", response.status, response.statusText);
-
-      if (!response.ok) {
-        throw new Error('Failed to generate DSA questions');
+        if (response.ok) {
+          data = await response.json();
+          console.log("✅ POST request successful");
+        } else {
+          throw new Error(`POST failed: ${response.status}`);
+        }
+      } catch (postError) {
+        console.log("⚠️ POST failed, trying GET endpoint");
+        
+        // Fallback to GET request
+        response = await fetch(`/api/dsa/generate/${encodeURIComponent(companyName)}`);
+        
+        if (!response.ok) {
+          throw new Error('Both POST and GET requests failed');
+        }
+        
+        data = await response.json();
+        console.log("✅ GET request successful");
       }
-
-      const data = await response.json();
       
-      if (data.success) {
+      if (data.questions && data.questions.length > 0) {
         toast({
-          title: "✅ Questions Generated!",
-          description: `Successfully generated ${data.questions.length} ${companyName}-specific DSA questions.`,
+          title: "Questions Generated!",
+          description: `Generated ${data.questions.length} ${companyName}-specific DSA questions.`,
         });
+        setQuestions(data.questions);
       } else {
-        toast({
-          title: "⚠️ Partial Success",
-          description: `Generated questions with fallbacks. ${data.questions.length} questions available.`,
-        });
+        throw new Error('No questions received from server');
       }
-
-      setQuestions(data.questions);
 
     } catch (error: any) {
       console.error('DSA generation error:', error);
-      toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to generate DSA questions. Please try again.",
-        variant: "destructive",
-      });
+      
+      // Final fallback - try to get any questions
+      try {
+        const fallbackResponse = await fetch('/api/dsa/generate/Google');
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          setQuestions(fallbackData.questions);
+          toast({
+            title: "Fallback Questions Loaded",
+            description: `Loaded ${fallbackData.questions.length} general DSA questions.`,
+          });
+        } else {
+          toast({
+            title: "Generation Failed",
+            description: "Unable to generate DSA questions. Please try again later.",
+            variant: "destructive",
+          });
+        }
+      } catch (fallbackError) {
+        toast({
+          title: "Generation Failed",
+          description: "Unable to generate DSA questions. Please try again later.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }

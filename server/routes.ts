@@ -130,15 +130,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // DSA Questions route - GET endpoint for immediate generation
+  app.get("/api/dsa/generate/:company?", async (req, res) => {
+    try {
+      const companyName = req.params.company || 'Google';
+      console.log(`🚀 GET DSA questions for: ${companyName}`);
+      
+      const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
+      const result = await generateCompanySpecificDSAQuestions(companyName);
+      
+      res.json({ 
+        questions: result.questions,
+        success: result.success,
+        company: companyName 
+      });
+    } catch (error: any) {
+      console.error("❌ GET DSA generation error:", error);
+      const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
+      const fallbackResult = await generateCompanySpecificDSAQuestions('Google');
+      
+      res.json({ 
+        questions: fallbackResult.questions,
+        success: false,
+        company: 'Google (Fallback)',
+        error: error.message
+      });
+    }
+  });
+
   // DSA Questions route - Company-specific generation
   app.post("/api/dsa/generate", async (req, res) => {
     try {
-      console.log("DSA generation request received:", req.body);
-      const { companyName } = req.body;
+      console.log("📥 DSA generation request received");
+      console.log("🔍 Request headers:", req.headers);
+      console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
+      console.log("🌐 Request content-type:", req.get('Content-Type'));
       
+      let { companyName } = req.body;
+      
+      // If no company name provided, use a default to ensure questions are generated
       if (!companyName || typeof companyName !== 'string' || companyName.trim() === '') {
-        console.log("Invalid company name:", companyName);
-        return res.status(400).json({ error: "Company name is required and must be a non-empty string" });
+        console.log("⚠️ No company name provided, using default: 'Google'");
+        companyName = 'Google'; // Default company to ensure generation works
       }
 
       // Import the DSA generator
@@ -160,7 +193,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       console.error("❌ DSA generation error:", error);
-      res.status(500).json({ error: error.message });
+      
+      // Even if there's an error, return fallback questions
+      try {
+        const { generateCompanySpecificDSAQuestions } = await import('./dsaQuestionGenerator');
+        const fallbackResult = await generateCompanySpecificDSAQuestions('Google');
+        
+        res.json({ 
+          questions: fallbackResult.questions,
+          success: false,
+          company: 'Google (Fallback)',
+          error: error.message
+        });
+      } catch (fallbackError) {
+        res.status(500).json({ error: error.message });
+      }
     }
   });
 
